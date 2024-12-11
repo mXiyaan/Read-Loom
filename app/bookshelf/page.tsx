@@ -12,13 +12,10 @@ import { BookshelfAnalytics } from "@/components/bookshelf-analytics"
 import { BorrowLendCard } from "@/components/borrow-lend-card"
 import { cn } from "@/lib/utils"
 import { SearchInput } from "@/components/search-input"
-import { Import } from 'lucide-react'
-import { ImportBooksModal } from "@/components/import-books-modal"
 
 export default function BookshelfPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [bookshelfSearchQuery, setBookshelfSearchQuery] = useState('')
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
 
   const handleSearch = (value: string) => {
     setSearchQuery(value)
@@ -34,11 +31,7 @@ export default function BookshelfPage() {
   return (
     <div className="p-6 flex flex-col gap-6">
       <h1 className="text-3xl font-bold">Book Shelf</h1>
-      <div className="flex justify-between items-center mb-4">
-        <Button onClick={() => setIsImportModalOpen(true)}>
-          <Import className="mr-2 h-4 w-4" /> Import from Goodreads
-        </Button>
-      </div>
+      
       <div className="flex gap-6">
         <div className="flex-grow space-y-6">
           <Card>
@@ -78,7 +71,6 @@ export default function BookshelfPage() {
               <BookList category="borrowed-lent" />
             </TabsContent>
           </Tabs>
-          <ImportBooksModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
         </div>
         <div className="w-1/4 min-w-[300px] space-y-6">
           <Card>
