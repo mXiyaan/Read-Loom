@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star } from 'lucide-react'
+import { Button } from "@/components/ui/button"
 
 interface Note {
   id: string
@@ -22,6 +23,8 @@ interface NoteDetailProps {
 
 export function NoteDetail({ noteId, onClose }: NoteDetailProps) {
   const [note, setNote] = useState<Note | null>(null)
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableContent, setEditableContent] = useState('');
 
   useEffect(() => {
     if (noteId) {
@@ -43,10 +46,22 @@ export function NoteDetail({ noteId, onClose }: NoteDetailProps) {
         createdAt: '2023-06-15',
       }
       setNote(mockNote)
+      setEditableContent(mockNote.content);
     } else {
       setNote(null)
     }
   }, [noteId])
+
+  const execCommand = (command: string) => {
+    if (window.getSelection) {
+      const selection = window.getSelection();
+      if (selection) {
+        document.execCommand(command, false, null);
+        setEditableContent(note?.content || '');
+      }
+    }
+  };
+
 
   if (!note) {
     return (
@@ -67,7 +82,18 @@ export function NoteDetail({ noteId, onClose }: NoteDetailProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm mb-4">{note.content}</p>
+        {isEditing && (
+          <div className="flex gap-2 mb-4">
+            <Button onClick={() => execCommand('bold')} variant="outline" size="sm">Bold</Button>
+            <Button onClick={() => execCommand('italic')} variant="outline" size="sm">Italic</Button>
+            <Button onClick={() => execCommand('underline')} variant="outline" size="sm">Underline</Button>
+          </div>
+        )}
+        {isEditing ? (
+          <div contentEditable={true} className="border border-gray-300 p-2 rounded" >{editableContent}</div>
+        ) : (
+          <p className="text-sm mb-4">{note.content}</p>
+        )}
         <p className="text-sm text-muted-foreground mb-2">Book: {note.bookTitle}</p>
         <div className="flex flex-wrap gap-2 mb-4">
           {note.tags.map(tag => (
